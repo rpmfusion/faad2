@@ -12,7 +12,7 @@ Summary:	Library and frontend for decoding MPEG2/4 AAC
 Name:		faad2
 Epoch:		1
 Version:	2.6.1
-Release:	4%{?dist}
+Release:	4%{?dist}.1
 License:	GPLv2+
 Group:		Applications/Multimedia
 URL:		http://www.audiocoding.com/faad2.html
@@ -22,7 +22,7 @@ BuildRequires:	gcc-c++
 BuildRequires:	id3lib-devel
 %{!?_without_sysfs:BuildRequires: libsysfs-devel}
 BuildRequires:	libtool
-BuildRequires:	xmms-devel
+#BuildRequires:	xmms-devel
 BuildRequires:	zlib-devel
 
 %description
@@ -76,7 +76,7 @@ done
 autoreconf -vif
 %configure \
     --disable-static \
-    --with-xmms \
+#    --with-xmms \
 #    --with-drm
 
 %{__make} %{?_smp_mflags}
@@ -85,7 +85,7 @@ autoreconf -vif
 %{__rm} -rf %{buildroot}
 %{__make} install DESTDIR=%{buildroot}
 %{__rm} %{buildroot}%{_libdir}/libfaad.la
-%{__rm} %{buildroot}%{xmmsinputplugindir}/libmp4.la
+#{__rm} %{buildroot}%{xmmsinputplugindir}/libmp4.la
 
 %clean
 %{__rm} -rf %{buildroot}
@@ -109,12 +109,15 @@ autoreconf -vif
 %{_includedir}/neaacdec.h
 %{_libdir}/libfaad.so
 
-%files -n xmms-%{name}
-%defattr(-,root,root,-)
-%doc plugins/xmms/AUTHORS plugins/xmms/NEWS
-%{xmmsinputplugindir}/libmp4.so
+#files -n xmms-%{name}
+#defattr(-,root,root,-)
+#doc plugins/xmms/AUTHORS plugins/xmms/NEWS
+#{xmmsinputplugindir}/libmp4.so
 
 %changelog
+* Tue Sep 09 2008 Thorsten Leemhuis <fedora [AT] leemhuis [DOT] info - 1:2.6.1-4.1
+- disable xmms-faad2, as there is no xmms in EL/EPEL right now
+
 * Sun Aug 03 2008 Thorsten Leemhuis <fedora [AT] leemhuis [DOT] info - 1:2.6.1-4
 - rebuild
 
