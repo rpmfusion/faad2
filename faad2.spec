@@ -12,7 +12,7 @@ Summary:	Library and frontend for decoding MPEG2/4 AAC
 Name:		faad2
 Epoch:		1
 Version:	2.6.1
-Release:	4%{?dist}
+Release:	5%{?dist}
 License:	GPLv2+
 Group:		Applications/Multimedia
 URL:		http://www.audiocoding.com/faad2.html
@@ -56,6 +56,7 @@ Summary:	AAC XMMS Input Plugin
 Group:		Applications/Multimedia
 Requires:	%{name} = %{epoch}:%{version}-%{release}
 Provides:	xmms-aac = %{version}-%{release}
+Obsoletes:	xmms-aac < 2.6.1
 
 %description -n xmms-%{name}
 FAAD 2 is a LC, MAIN and LTP profile, MPEG2 and MPEG-4 AAC decoder, completely
@@ -112,9 +113,14 @@ autoreconf -vif
 %files -n xmms-%{name}
 %defattr(-,root,root,-)
 %doc plugins/xmms/AUTHORS plugins/xmms/NEWS
+%doc plugins/xmms/ChangeLog plugins/xmms/README plugins/xmms/TODO
 %{xmmsinputplugindir}/libmp4.so
 
 %changelog
+* Sat Oct 18 2008 Dominik Mierzejewski <dominik [AT] greysector [DOT] net> 1:2.6.1-5
+- add Obsoletes: for xmms-aac to ensure smooth upgrade from Freshrpms
+- add some additional docs for xmms-faad2
+
 * Sun Aug 03 2008 Thorsten Leemhuis <fedora [AT] leemhuis [DOT] info - 1:2.6.1-4
 - rebuild
 
