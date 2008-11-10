@@ -12,11 +12,12 @@ Summary:	Library and frontend for decoding MPEG2/4 AAC
 Name:		faad2
 Epoch:		1
 Version:	2.6.1
-Release:	5%{?dist}
+Release:	6%{?dist}
 License:	GPLv2+
 Group:		Applications/Multimedia
 URL:		http://www.audiocoding.com/faad2.html
 Source:		http://download.sourceforge.net/faac/%{name}-%{version}.tar.gz
+Patch0:		%{name}-cve-2008-4201.patch
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root
 BuildRequires:	gcc-c++
 BuildRequires:	id3lib-devel
@@ -66,6 +67,7 @@ This package contains an input plugin for xmms.
 
 %prep
 %setup -q -n %{name}
+%patch0 -p1 -b .cve
 find . -name "*.c" -o -name "*.h" | xargs chmod 644
 
 for f in AUTHORS COPYING ChangeLog NEWS README* TODO ; do
@@ -117,6 +119,9 @@ autoreconf -vif
 %{xmmsinputplugindir}/libmp4.so
 
 %changelog
+* Mon Nov 10 2008 Dominik Mierzejewski <dominik [AT] greysector [DOT] net> 1:2.6.1-6
+- fix CVE-2008-4201
+
 * Sat Oct 18 2008 Dominik Mierzejewski <dominik [AT] greysector [DOT] net> 1:2.6.1-5
 - add Obsoletes: for xmms-aac to ensure smooth upgrade from Freshrpms
 - add some additional docs for xmms-faad2
