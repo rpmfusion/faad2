@@ -11,18 +11,18 @@
 Summary:	Library and frontend for decoding MPEG2/4 AAC
 Name:		faad2
 Epoch:		1
-Version:	2.6.1
-Release:	6%{?dist}
+Version:	2.7
+Release:	1%{?dist}
 License:	GPLv2+
 Group:		Applications/Multimedia
 URL:		http://www.audiocoding.com/faad2.html
-Source:		http://download.sourceforge.net/faac/%{name}-%{version}.tar.gz
-Patch0:		%{name}-cve-2008-4201.patch
+Source:		http://downloads.sourceforge.net/sourceforge/faac/%{name}-%{version}.tar.bz2
+# fix non-PIC objects in libmp4ff.a
+Patch0:		%{name}-pic.patch
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root
 BuildRequires:	gcc-c++
 BuildRequires:	id3lib-devel
 %{!?_without_sysfs:BuildRequires: libsysfs-devel}
-BuildRequires:	libtool
 BuildRequires:	xmms-devel
 BuildRequires:	zlib-devel
 
@@ -55,7 +55,7 @@ This package contains development files and documentation for libfaad.
 %package -n xmms-%{name}
 Summary:	AAC XMMS Input Plugin
 Group:		Applications/Multimedia
-Requires:	%{name} = %{epoch}:%{version}-%{release}
+Requires:	%{name}-libs = %{epoch}:%{version}-%{release}
 Provides:	xmms-aac = %{version}-%{release}
 Obsoletes:	xmms-aac < 2.6.1
 
@@ -66,8 +66,8 @@ written from scratch.
 This package contains an input plugin for xmms.
 
 %prep
-%setup -q -n %{name}
-%patch0 -p1 -b .cve
+%setup -q
+%patch0 -p1 -b .pic
 find . -name "*.c" -o -name "*.h" | xargs chmod 644
 
 for f in AUTHORS COPYING ChangeLog NEWS README* TODO ; do
@@ -75,12 +75,14 @@ for f in AUTHORS COPYING ChangeLog NEWS README* TODO ; do
 done
 
 %build
-# This is what the README.linux file recommends
-autoreconf -vif
 %configure \
     --disable-static \
     --with-xmms \
 #    --with-drm
+
+# remove rpath from libtool
+sed -i.rpath 's|^hardcode_libdir_flag_spec=.*|hardcode_libdir_flag_spec=""|g' libtool
+sed -i.rpath 's|^runpath_var=LD_RUN_PATH|runpath_var=DIE_RPATH_DIE|g' libtool
 
 %{__make} %{?_smp_mflags}
 
@@ -89,6 +91,10 @@ autoreconf -vif
 %{__make} install DESTDIR=%{buildroot}
 %{__rm} %{buildroot}%{_libdir}/libfaad.la
 %{__rm} %{buildroot}%{xmmsinputplugindir}/libmp4.la
+%{__rm} %{buildroot}%{_includedir}/mp4ff{,int}.h
+%{__rm} %{buildroot}%{_libdir}/libmp4ff.a
+install -dm755 %{buildroot}%{_mandir}/man1
+%{__mv} %{buildroot}%{_mandir}/{manm/faad.man,man1/faad.1}
 
 %clean
 %{__rm} -rf %{buildroot}
@@ -99,8 +105,9 @@ autoreconf -vif
 
 %files
 %defattr(-, root, root, -)
-%doc AUTHORS COPYING ChangeLog NEWS README* TODO
+%doc AUTHORS COPYING ChangeLog NEWS README*
 %{_bindir}/faad
+%{_mandir}/man1/faad.1*
 
 %files libs
 %defattr(-,root,root,-)
@@ -108,6 +115,7 @@ autoreconf -vif
 
 %files devel
 %defattr(-, root, root, -)
+%doc TODO docs/Ahead\ AAC\ Decoder\ library\ documentation.pdf
 %{_includedir}/faad.h
 %{_includedir}/neaacdec.h
 %{_libdir}/libfaad.so
@@ -119,6 +127,14 @@ autoreconf -vif
 %{xmmsinputplugindir}/libmp4.so
 
 %changelog
+* Fri Mar 13 2009 Dominik Mierzejewski <dominik [AT] greysector [DOT] net> 1:2.7-1
+- update to 2.7
+- don't install internal libmp4ff
+- include manpage
+- fix build on x86_64 (non-PIC objects in libmp4ff.a)
+- fix rpaths
+- make xmms plugin depend on -libs, not the frontend
+
 * Mon Nov 10 2008 Dominik Mierzejewski <dominik [AT] greysector [DOT] net> 1:2.6.1-6
 - fix CVE-2008-4201
 
