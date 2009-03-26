@@ -71,7 +71,7 @@ This package contains an input plugin for xmms.
 find . -name "*.c" -o -name "*.h" | xargs chmod 644
 
 for f in AUTHORS COPYING ChangeLog NEWS README* TODO ; do
-    tr -d '\r' <$f >$f.n && mv -f $f.n $f
+    tr -d '\r' <$f >$f.n && touch -r $f $f.n && mv -f $f.n $f
 done
 
 %build
@@ -134,6 +134,7 @@ install -dm755 %{buildroot}%{_mandir}/man1
 - fix build on x86_64 (non-PIC objects in libmp4ff.a)
 - fix rpaths
 - make xmms plugin depend on -libs, not the frontend
+- preserve docs timestamps
 
 * Mon Nov 10 2008 Dominik Mierzejewski <dominik [AT] greysector [DOT] net> 1:2.6.1-6
 - fix CVE-2008-4201
