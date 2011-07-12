@@ -12,7 +12,7 @@ Summary:	Library and frontend for decoding MPEG2/4 AAC
 Name:		faad2
 Epoch:		1
 Version:	2.7
-Release:	1%{?dist}
+Release:	2%{?dist}
 License:	GPLv2+
 Group:		Applications/Multimedia
 URL:		http://www.audiocoding.com/faad2.html
@@ -52,6 +52,7 @@ written from scratch.
 
 This package contains development files and documentation for libfaad.
 
+%{?_with_xmms:
 %package -n xmms-%{name}
 Summary:	AAC XMMS Input Plugin
 Group:		Applications/Multimedia
@@ -64,6 +65,7 @@ FAAD 2 is a LC, MAIN and LTP profile, MPEG2 and MPEG-4 AAC decoder, completely
 written from scratch.
 
 This package contains an input plugin for xmms.
+}
 
 %prep
 %setup -q
@@ -77,7 +79,7 @@ done
 %build
 %configure \
     --disable-static \
-    --with-xmms \
+%{?_with_xmms:--with-xmms} \
 #    --with-drm
 
 # remove rpath from libtool
@@ -90,7 +92,9 @@ sed -i.rpath 's|^runpath_var=LD_RUN_PATH|runpath_var=DIE_RPATH_DIE|g' libtool
 %{__rm} -rf %{buildroot}
 %{__make} install DESTDIR=%{buildroot}
 %{__rm} %{buildroot}%{_libdir}/libfaad.la
+%{?_with_xmms:
 %{__rm} %{buildroot}%{xmmsinputplugindir}/libmp4.la
+}
 %{__rm} %{buildroot}%{_includedir}/mp4ff{,int}.h
 %{__rm} %{buildroot}%{_libdir}/libmp4ff.a
 install -dm755 %{buildroot}%{_mandir}/man1
@@ -120,13 +124,18 @@ install -dm755 %{buildroot}%{_mandir}/man1
 %{_includedir}/neaacdec.h
 %{_libdir}/libfaad.so
 
+%{?_with_xmms:
 %files -n xmms-%{name}
 %defattr(-,root,root,-)
 %doc plugins/xmms/AUTHORS plugins/xmms/NEWS
 %doc plugins/xmms/ChangeLog plugins/xmms/README plugins/xmms/TODO
 %{xmmsinputplugindir}/libmp4.so
+}
 
 %changelog
+* Tue Jul 12 2011 Nicolas Chauvet <kwizart@gmail.com> - 1:2.7-2
+- Disable xmms for EL-6
+
 * Fri Mar 13 2009 Dominik Mierzejewski <dominik [AT] greysector [DOT] net> 1:2.7-1
 - update to 2.7
 - don't install internal libmp4ff
