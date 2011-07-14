@@ -23,7 +23,7 @@ BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root
 BuildRequires:	gcc-c++
 BuildRequires:	id3lib-devel
 %{!?_without_sysfs:BuildRequires: libsysfs-devel}
-BuildRequires:	xmms-devel
+%{?_with_xmms:BuildRequires: xmms-devel}
 BuildRequires:	zlib-devel
 
 %description
