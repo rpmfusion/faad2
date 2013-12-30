@@ -12,7 +12,7 @@ Summary:	Library and frontend for decoding MPEG2/4 AAC
 Name:		faad2
 Epoch:		1
 Version:	2.7
-Release:	4%{?dist}
+Release:	5%{?dist}
 License:	GPLv2+
 Group:		Applications/Multimedia
 URL:		http://www.audiocoding.com/faad2.html
@@ -127,6 +127,9 @@ install -dm755 %{buildroot}%{_mandir}/man1
 %{xmmsinputplugindir}/libmp4.so
 
 %changelog
+* Mon Dec 30 2013 Nicolas Chauvet <kwizart@gmail.com> - 1:2.7-5
+- Rebuilt for F-20
+
 * Wed Mar 27 2013 Nicolas Chauvet <kwizart@gmail.com> - 1:2.7-4
 - Change the escaping space hack - rhbz#928110
 
