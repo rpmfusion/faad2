@@ -16,7 +16,7 @@ Release:	6%{?dist}
 License:	GPLv2+
 Group:		Applications/Multimedia
 URL:		http://www.audiocoding.com/faad2.html
-Source:     http://downloads.sourceforge.net/faac/%{name}-%{version}.tar.bz2
+Source:		http://downloads.sourceforge.net/faac/%{name}-%{version}.tar.bz2
 # fix non-PIC objects in libmp4ff.a
 Patch0:		%{name}-pic.patch
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root
