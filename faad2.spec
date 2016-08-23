@@ -12,7 +12,7 @@ Summary:	Library and frontend for decoding MPEG2/4 AAC
 Name:		faad2
 Epoch:		1
 Version:	2.7
-Release:	7%{?dist}
+Release:	8%{?dist}
 License:	GPLv2+
 Group:		Applications/Multimedia
 URL:		http://www.audiocoding.com/faad2.html
@@ -120,6 +120,9 @@ sed -i.rpath 's|^runpath_var=LD_RUN_PATH|runpath_var=DIE_RPATH_DIE|g' libtool
 %{xmmsinputplugindir}/libmp4.so
 
 %changelog
+* Tue Aug 23 2016 Nicolas Chauvet <nicolas.chauvet@kwizart.fr> - 1:2.7-8
+- Bump for dist
+
 * Thu Aug 18 2016 Sérgio Basto <sergio@serjux.com> - 1:2.7-7
 - Clean spec, Vascom patches series, rfbz #4200, add license tag
 
