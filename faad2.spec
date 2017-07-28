@@ -1,28 +1,23 @@
-%{?el4:%define _without_sysfs 1}
-%{?fc3:%define _without_sysfs 1}
-%{?fc2:%define _without_sysfs 1}
-%{?fc1:%define _without_sysfs 1}
-%{?el3:%define _without_sysfs 1}
-%{?rh9:%define _without_sysfs 1}
-%{?rh7:%define _without_sysfs 1}
-%{?el2:%define _without_sysfs 1}
-%define         xmmsinputplugindir      %(xmms-config --input-plugin-dir 2>/dev/null)
+%global		xmmsinputplugindir	%(xmms-config --input-plugin-dir 2>/dev/null)
 
 Summary:	Library and frontend for decoding MPEG2/4 AAC
 Name:		faad2
 Epoch:		1
-Version:	2.7
-Release:	9%{?dist}
+Version:	2.8.1
+Release:	1%{?dist}
 License:	GPLv2+
 Group:		Applications/Multimedia
 URL:		http://www.audiocoding.com/faad2.html
 Source:		http://downloads.sourceforge.net/faac/%{name}-%{version}.tar.bz2
 # fix non-PIC objects in libmp4ff.a
 Patch0:		%{name}-pic.patch
+Patch1:		fix_undefined_version.patch
 
 BuildRequires:	gcc-c++
+BuildRequires:	automake
+BuildRequires:	libtool
 BuildRequires:	id3lib-devel
-%{!?_without_sysfs:BuildRequires: libsysfs-devel}
+BuildRequires:	libsysfs-devel
 BuildRequires:	xmms-devel
 BuildRequires:	zlib-devel
 
@@ -44,7 +39,7 @@ This package contains libfaad.
 %package devel
 Summary:	Development libraries of the FAAD 2 AAC decoder
 Group:		Development/Libraries
-Requires:	%{name}-libs = %{epoch}:%{version}-%{release}
+Requires:	%{name}-libs%{?_isa} = %{epoch}:%{version}-%{release}
 
 %description devel
 FAAD 2 is a LC, MAIN and LTP profile, MPEG2 and MPEG-4 AAC decoder, completely
@@ -55,8 +50,8 @@ This package contains development files and documentation for libfaad.
 %package -n xmms-%{name}
 Summary:	AAC XMMS Input Plugin
 Group:		Applications/Multimedia
-Requires:	%{name}-libs = %{epoch}:%{version}-%{release}
-Provides:	xmms-aac = %{version}-%{release}
+Requires:	%{name}-libs%{?_isa} = %{epoch}:%{version}-%{release}
+Provides:	xmms-aac%{?_isa} = %{version}-%{release}
 Obsoletes:	xmms-aac < 2.6.1
 
 %description -n xmms-%{name}
@@ -67,32 +62,20 @@ This package contains an input plugin for xmms.
 
 %prep
 %autosetup -p1
-find . -name "*.c" -o -name "*.h" | xargs chmod 644
-
-for f in AUTHORS COPYING ChangeLog NEWS README* TODO ; do
-    tr -d '\r' <$f >$f.n && touch -r $f $f.n && mv -f $f.n $f
-done
+./bootstrap
 
 %build
 %configure \
     --disable-static \
-    --with-xmms \
-#    --with-drm
-
-# remove rpath from libtool
-sed -i.rpath 's|^hardcode_libdir_flag_spec=.*|hardcode_libdir_flag_spec=""|g' libtool
-sed -i.rpath 's|^runpath_var=LD_RUN_PATH|runpath_var=DIE_RPATH_DIE|g' libtool
+    --with-xmms
 
 %make_build
 
 %install
 %make_install
-%{__rm} %{buildroot}%{_libdir}/libfaad.la
-%{__rm} %{buildroot}%{xmmsinputplugindir}/libmp4.la
-%{__rm} %{buildroot}%{_includedir}/mp4ff{,int}.h
-%{__rm} %{buildroot}%{_libdir}/libmp4ff.a
-%{__install} -dm755 %{buildroot}%{_mandir}/man1
-%{__mv} %{buildroot}%{_mandir}/{manm/faad.man,man1/faad.1}
+
+#Remove libtool archives.
+find $RPM_BUILD_ROOT -name '*.la' -or -name '*.a' | xargs rm -f
 
 
 %post libs -p /sbin/ldconfig
@@ -100,26 +83,28 @@ sed -i.rpath 's|^runpath_var=LD_RUN_PATH|runpath_var=DIE_RPATH_DIE|g' libtool
 %postun libs -p /sbin/ldconfig
 
 %files
-%doc AUTHORS COPYING ChangeLog NEWS README*
+%doc AUTHORS ChangeLog NEWS README*
 %license COPYING
 %{_bindir}/faad
 %{_mandir}/man1/faad.1*
 
 %files libs
-%{_libdir}/libfaad.so.*
+%{_libdir}/libfaad*.so.*
 
 %files devel
 %doc TODO docs/Ahead?AAC?Decoder?library?documentation.pdf
 %{_includedir}/faad.h
 %{_includedir}/neaacdec.h
-%{_libdir}/libfaad.so
+%{_libdir}/libfaad*.so
 
 %files -n xmms-%{name}
-%doc plugins/xmms/AUTHORS plugins/xmms/NEWS
-%doc plugins/xmms/ChangeLog plugins/xmms/README plugins/xmms/TODO
+%doc plugins/xmms/{AUTHORS,NEWS,ChangeLog,README,TODO}
 %{xmmsinputplugindir}/libmp4.so
 
 %changelog
+* Fri Jul 28 2017 Leigh Scott <leigh123linux@googlemail.com> - 1:2.8.1-1
+- update to 2.8.1
+
 * Sun Mar 19 2017 RPM Fusion Release Engineering <kwizart@rpmfusion.org> - 1:2.7-9
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_26_Mass_Rebuild
 
