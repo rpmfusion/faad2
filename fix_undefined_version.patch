@@ -1,11 +1,11 @@
 --- a/include/neaacdec.h
 +++ b/include/neaacdec.h
-@@ -73,7 +73,7 @@
-   #endif
+@@ -67,7 +67,7 @@
+   #define NEAACDECAPI
  #endif
  
--#define FAAD2_VERSION PACKAGE_VERSION
-+#define FAAD2_VERSION "2.8.1"
+-#define FAAD2_VERSION "unknown"
++#define FAAD2_VERSION "2.8.8"
  
  /* object types for AAC */
  #define MAIN       1

@@ -3,12 +3,12 @@
 Summary:	Library and frontend for decoding MPEG2/4 AAC
 Name:		faad2
 Epoch:		1
-Version:	2.8.1
-Release:	3%{?dist}
+Version:	2.8.8
+Release:	1%{?dist}
 License:	GPLv2+
 Group:		Applications/Multimedia
 URL:		http://www.audiocoding.com/faad2.html
-Source:		http://downloads.sourceforge.net/faac/%{name}-%{version}.tar.bz2
+Source:		http://downloads.sourceforge.net/sourceforge/faac/%{name}-%{version}.tar.gz
 # fix non-PIC objects in libmp4ff.a
 Patch0:		%{name}-pic.patch
 Patch1:		fix_undefined_version.patch
@@ -62,7 +62,7 @@ This package contains an input plugin for xmms.
 
 %prep
 %autosetup -p1
-./bootstrap
+autoreconf -fiv
 
 %build
 %configure \
@@ -78,9 +78,8 @@ This package contains an input plugin for xmms.
 find $RPM_BUILD_ROOT -name '*.la' -or -name '*.a' | xargs rm -f
 
 
-%post libs -p /sbin/ldconfig
+%ldconfig_scriptlets libs
 
-%postun libs -p /sbin/ldconfig
 
 %files
 %doc AUTHORS ChangeLog NEWS README*
@@ -92,7 +91,7 @@ find $RPM_BUILD_ROOT -name '*.la' -or -name '*.a' | xargs rm -f
 %{_libdir}/libfaad*.so.*
 
 %files devel
-%doc TODO docs/Ahead?AAC?Decoder?library?documentation.pdf
+%doc TODO
 %{_includedir}/faad.h
 %{_includedir}/neaacdec.h
 %{_libdir}/libfaad*.so
@@ -102,6 +101,9 @@ find $RPM_BUILD_ROOT -name '*.la' -or -name '*.a' | xargs rm -f
 %{xmmsinputplugindir}/libmp4.so
 
 %changelog
+* Sat Apr 14 2018 Leigh Scott <leigh123linux@googlemail.com> - 1:2.8.8-1
+- Update to 2.8.8
+
 * Wed Feb 28 2018 RPM Fusion Release Engineering <leigh123linux@googlemail.com> - 1:2.8.1-3
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_28_Mass_Rebuild
 
