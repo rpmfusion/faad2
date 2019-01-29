@@ -14,8 +14,6 @@ Patch0:		%{name}-pic.patch
 Patch1:		fix_undefined_version.patch
 
 BuildRequires:	gcc-c++
-BuildRequires:	automake
-BuildRequires:	libtool
 BuildRequires:	id3lib-devel
 BuildRequires:	libsysfs-devel
 BuildRequires:	xmms-devel
@@ -62,12 +60,15 @@ This package contains an input plugin for xmms.
 
 %prep
 %autosetup -p1
-autoreconf -fiv
 
 %build
 %configure \
     --disable-static \
     --with-xmms
+
+# remove rpath from libtool
+sed -i.rpath 's|^hardcode_libdir_flag_spec=.*|hardcode_libdir_flag_spec=""|g' libtool
+sed -i.rpath 's|^runpath_var=LD_RUN_PATH|runpath_var=DIE_RPATH_DIE|g' libtool
 
 %make_build
 
