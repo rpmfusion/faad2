@@ -6,7 +6,6 @@ Epoch:		1
 Version:	2.8.8
 Release:	3%{?dist}
 License:	GPLv2+
-Group:		Applications/Multimedia
 URL:		http://www.audiocoding.com/faad2.html
 Source:		http://downloads.sourceforge.net/sourceforge/faac/%{name}-%{version}.tar.gz
 # fix non-PIC objects in libmp4ff.a
@@ -25,7 +24,6 @@ written from scratch.
 
 %package libs
 Summary:	Shared libraries of the FAAD 2 AAC decoder
-Group:		System Environment/Libraries
 Obsoletes:	%{name} < 1:2.6.1-3
 
 %description libs
@@ -36,7 +34,6 @@ This package contains libfaad.
 
 %package devel
 Summary:	Development libraries of the FAAD 2 AAC decoder
-Group:		Development/Libraries
 Requires:	%{name}-libs%{?_isa} = %{epoch}:%{version}-%{release}
 
 %description devel
@@ -47,7 +44,6 @@ This package contains development files and documentation for libfaad.
 
 %package -n xmms-%{name}
 Summary:	AAC XMMS Input Plugin
-Group:		Applications/Multimedia
 Requires:	%{name}-libs%{?_isa} = %{epoch}:%{version}-%{release}
 Provides:	xmms-aac%{?_isa} = %{version}-%{release}
 Obsoletes:	xmms-aac < 2.6.1
