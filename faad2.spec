@@ -8,23 +8,31 @@
 %{?el2:%define _without_sysfs 1}
 %define         xmmsinputplugindir      %(xmms-config --input-plugin-dir 2>/dev/null)
 
+%{?el7:%define _with_xmms 1}
+
 Summary:	Library and frontend for decoding MPEG2/4 AAC
 Name:		faad2
 Epoch:		1
 Version:	2.7
-Release:	2%{?dist}.3
+Release:	9%{?dist}
 License:	GPLv2+
 Group:		Applications/Multimedia
 URL:		http://www.audiocoding.com/faad2.html
-Source:		http://downloads.sourceforge.net/sourceforge/faac/%{name}-%{version}.tar.bz2
+Source:		http://downloads.sourceforge.net/faac/%{name}-%{version}.tar.bz2
 # fix non-PIC objects in libmp4ff.a
 Patch0:		%{name}-pic.patch
-BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root
+# Security issue from videolan contribs
+Patch1:         faad2-fix-overflows.patch
+
 BuildRequires:	gcc-c++
 BuildRequires:	id3lib-devel
 %{!?_without_sysfs:BuildRequires: libsysfs-devel}
 %{?_with_xmms:BuildRequires: xmms-devel}
 BuildRequires:	zlib-devel
+
+%{!?_with_xmms:
+Obsoletes:	%{name}-xmms < %{version}-%{release}
+}
 
 %description
 FAAD 2 is a LC, MAIN and LTP profile, MPEG2 and MPEG-4 AAC decoder, completely
@@ -68,8 +76,7 @@ This package contains an input plugin for xmms.
 }
 
 %prep
-%setup -q
-%patch0 -p1 -b .pic
+%autosetup -p1
 find . -name "*.c" -o -name "*.h" | xargs chmod 644
 
 for f in AUTHORS COPYING ChangeLog NEWS README* TODO ; do
@@ -86,58 +93,71 @@ done
 sed -i.rpath 's|^hardcode_libdir_flag_spec=.*|hardcode_libdir_flag_spec=""|g' libtool
 sed -i.rpath 's|^runpath_var=LD_RUN_PATH|runpath_var=DIE_RPATH_DIE|g' libtool
 
-%{__make} %{?_smp_mflags}
+%make_build
 
 %install
-%{__rm} -rf %{buildroot}
-%{__make} install DESTDIR=%{buildroot}
+%make_install
 %{__rm} %{buildroot}%{_libdir}/libfaad.la
 %{?_with_xmms:
 %{__rm} %{buildroot}%{xmmsinputplugindir}/libmp4.la
 }
 %{__rm} %{buildroot}%{_includedir}/mp4ff{,int}.h
 %{__rm} %{buildroot}%{_libdir}/libmp4ff.a
-install -dm755 %{buildroot}%{_mandir}/man1
+%{__install} -dm755 %{buildroot}%{_mandir}/man1
 %{__mv} %{buildroot}%{_mandir}/{manm/faad.man,man1/faad.1}
 
-%clean
-%{__rm} -rf %{buildroot}
 
 %post libs -p /sbin/ldconfig
 
 %postun libs -p /sbin/ldconfig
 
 %files
-%defattr(-, root, root, -)
 %doc AUTHORS COPYING ChangeLog NEWS README*
+%license COPYING
 %{_bindir}/faad
 %{_mandir}/man1/faad.1*
 
 %files libs
-%defattr(-,root,root,-)
 %{_libdir}/libfaad.so.*
 
 %files devel
-%defattr(-, root, root, -)
-%doc TODO docs/Ahead\ AAC\ Decoder\ library\ documentation.pdf
+%doc TODO docs/Ahead?AAC?Decoder?library?documentation.pdf
 %{_includedir}/faad.h
 %{_includedir}/neaacdec.h
 %{_libdir}/libfaad.so
 
 %{?_with_xmms:
 %files -n xmms-%{name}
-%defattr(-,root,root,-)
 %doc plugins/xmms/AUTHORS plugins/xmms/NEWS
 %doc plugins/xmms/ChangeLog plugins/xmms/README plugins/xmms/TODO
 %{xmmsinputplugindir}/libmp4.so
 }
 
 %changelog
-* Wed Jan 04 2012 Nicolas Chauvet <kwizart@gmail.com> - 1:2.7-2.3
-- Rebuild for i686 target
+* Fri Jun 07 2019 Nicolas Chauvet <kwizart@gmail.com> - 1:2.7-9
+- Fix overflows
+- Conditionalize xmms for el7
 
-* Tue Jul 12 2011 Nicolas Chauvet <kwizart@gmail.com> - 1:2.7-2
-- Disable xmms for EL-6
+* Tue Aug 23 2016 Nicolas Chauvet <nicolas.chauvet@kwizart.fr> - 1:2.7-8
+- Bump for dist
+
+* Thu Aug 18 2016 Sérgio Basto <sergio@serjux.com> - 1:2.7-7
+- Clean spec, Vascom patches series, rfbz #4200, add license tag
+
+* Mon Sep 01 2014 Sérgio Basto <sergio@serjux.com> - 1:2.7-6
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_21_22_Mass_Rebuild
+
+* Mon Dec 30 2013 Nicolas Chauvet <kwizart@gmail.com> - 1:2.7-5
+- Rebuilt for F-20
+
+* Wed Mar 27 2013 Nicolas Chauvet <kwizart@gmail.com> - 1:2.7-4
+- Change the escaping space hack - rhbz#928110
+
+* Sun Mar 03 2013 Nicolas Chauvet <kwizart@gmail.com> - 1:2.7-3
+- Mass rebuilt for Fedora 19 Features
+
+* Wed Jan 25 2012 Nicolas Chauvet <kwizart@gmail.com> - 1:2.7-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_17_Mass_Rebuild
 
 * Fri Mar 13 2009 Dominik Mierzejewski <dominik [AT] greysector [DOT] net> 1:2.7-1
 - update to 2.7
