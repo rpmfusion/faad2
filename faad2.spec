@@ -1,4 +1,7 @@
-%global		xmmsinputplugindir	%(xmms-config --input-plugin-dir 2>/dev/null)
+%if 0%{?fedora} || 0%{?el7}
+%global _with_xmms 1
+%global	xmmsinputplugindir %(xmms-config --input-plugin-dir 2>/dev/null)
+%endif
 
 Summary:	Library and frontend for decoding MPEG2/4 AAC
 Name:		faad2
@@ -15,10 +18,16 @@ Patch1:		fix_undefined_version.patch
 Patch2:         faad2-fix-overflows.patch
 
 BuildRequires:	gcc-c++
-BuildRequires:	id3lib-devel
 BuildRequires:	libsysfs-devel
-BuildRequires:	xmms-devel
+%{?_with_xmms:
+BuildRequires: id3lib-devel
+BuildRequires: xmms-devel
+}
 BuildRequires:	zlib-devel
+
+%{!?_with_xmms:
+Obsoletes:	%{name}-xmms < %{version}-%{release}
+}
 
 %description
 FAAD 2 is a LC, MAIN and LTP profile, MPEG2 and MPEG-4 AAC decoder, completely
@@ -44,6 +53,7 @@ written from scratch.
 
 This package contains development files and documentation for libfaad.
 
+%{?_with_xmms:
 %package -n xmms-%{name}
 Summary:	AAC XMMS Input Plugin
 Requires:	%{name}-libs%{?_isa} = %{epoch}:%{version}-%{release}
@@ -55,6 +65,7 @@ FAAD 2 is a LC, MAIN and LTP profile, MPEG2 and MPEG-4 AAC decoder, completely
 written from scratch.
 
 This package contains an input plugin for xmms.
+}
 
 %prep
 %autosetup -p1
@@ -62,7 +73,7 @@ This package contains an input plugin for xmms.
 %build
 %configure \
     --disable-static \
-    --with-xmms
+    %{?_with_xmms:--with-xmms}
 
 # remove rpath from libtool
 sed -i.rpath 's|^hardcode_libdir_flag_spec=.*|hardcode_libdir_flag_spec=""|g' libtool
@@ -95,13 +106,16 @@ find $RPM_BUILD_ROOT -name '*.la' -or -name '*.a' | xargs rm -f
 %{_includedir}/neaacdec.h
 %{_libdir}/libfaad*.so
 
+%{?_with_xmms:
 %files -n xmms-%{name}
 %doc plugins/xmms/{AUTHORS,NEWS,ChangeLog,README,TODO}
 %{xmmsinputplugindir}/libmp4.so
+}
 
 %changelog
 * Fri Jun 07 2019 Nicolas Chauvet <kwizart@gmail.com> - 1:2.8.8-6
 - Fix overflows
+- Conditionalize xmms
 
 * Mon Mar 04 2019 RPM Fusion Release Engineering <leigh123linux@gmail.com> - 1:2.8.8-5
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_30_Mass_Rebuild
