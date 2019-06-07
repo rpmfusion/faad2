@@ -77,6 +77,7 @@ This package contains an input plugin for xmms.
 
 %prep
 %autosetup -p1
+
 find . -name "*.c" -o -name "*.h" | xargs chmod 644
 
 for f in AUTHORS COPYING ChangeLog NEWS README* TODO ; do
