@@ -12,13 +12,15 @@ Summary:	Library and frontend for decoding MPEG2/4 AAC
 Name:		faad2
 Epoch:		1
 Version:	2.7
-Release:	8%{?dist}
+Release:	9%{?dist}
 License:	GPLv2+
 Group:		Applications/Multimedia
 URL:		http://www.audiocoding.com/faad2.html
 Source:		http://downloads.sourceforge.net/faac/%{name}-%{version}.tar.bz2
 # fix non-PIC objects in libmp4ff.a
 Patch0:		%{name}-pic.patch
+# Security issue from videolan contribs
+Patch1:         faad2-fix-overflows.patch
 
 BuildRequires:	gcc-c++
 BuildRequires:	id3lib-devel
@@ -120,6 +122,9 @@ sed -i.rpath 's|^runpath_var=LD_RUN_PATH|runpath_var=DIE_RPATH_DIE|g' libtool
 %{xmmsinputplugindir}/libmp4.so
 
 %changelog
+* Fri Jun 07 2019 Nicolas Chauvet <kwizart@gmail.com> - 1:2.7-9
+- Fix overflows
+
 * Tue Aug 23 2016 Nicolas Chauvet <nicolas.chauvet@kwizart.fr> - 1:2.7-8
 - Bump for dist
 
