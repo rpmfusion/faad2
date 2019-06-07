@@ -86,7 +86,7 @@ done
 %build
 %configure \
     --disable-static \
-    --with-xmms \
+%{?_with_xmms:--with-xmms} \
 #    --with-drm
 
 # remove rpath from libtool
@@ -98,7 +98,9 @@ sed -i.rpath 's|^runpath_var=LD_RUN_PATH|runpath_var=DIE_RPATH_DIE|g' libtool
 %install
 %make_install
 %{__rm} %{buildroot}%{_libdir}/libfaad.la
+%{?_with_xmms:
 %{__rm} %{buildroot}%{xmmsinputplugindir}/libmp4.la
+}
 %{__rm} %{buildroot}%{_includedir}/mp4ff{,int}.h
 %{__rm} %{buildroot}%{_libdir}/libmp4ff.a
 %{__install} -dm755 %{buildroot}%{_mandir}/man1
