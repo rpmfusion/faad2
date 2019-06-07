@@ -8,6 +8,8 @@
 %{?el2:%define _without_sysfs 1}
 %define         xmmsinputplugindir      %(xmms-config --input-plugin-dir 2>/dev/null)
 
+%{?el7:%define _with_xmms 1}
+
 Summary:	Library and frontend for decoding MPEG2/4 AAC
 Name:		faad2
 Epoch:		1
@@ -25,8 +27,12 @@ Patch1:         faad2-fix-overflows.patch
 BuildRequires:	gcc-c++
 BuildRequires:	id3lib-devel
 %{!?_without_sysfs:BuildRequires: libsysfs-devel}
-BuildRequires:	xmms-devel
+%{?_with_xmms:BuildRequires: xmms-devel}
 BuildRequires:	zlib-devel
+
+%{!?_with_xmms:
+Obsoletes:	%{name}-xmms < %{version}-%{release}
+}
 
 %description
 FAAD 2 is a LC, MAIN and LTP profile, MPEG2 and MPEG-4 AAC decoder, completely
@@ -54,6 +60,7 @@ written from scratch.
 
 This package contains development files and documentation for libfaad.
 
+%{?_with_xmms:
 %package -n xmms-%{name}
 Summary:	AAC XMMS Input Plugin
 Group:		Applications/Multimedia
@@ -66,6 +73,7 @@ FAAD 2 is a LC, MAIN and LTP profile, MPEG2 and MPEG-4 AAC decoder, completely
 written from scratch.
 
 This package contains an input plugin for xmms.
+}
 
 %prep
 %autosetup -p1
@@ -116,14 +124,17 @@ sed -i.rpath 's|^runpath_var=LD_RUN_PATH|runpath_var=DIE_RPATH_DIE|g' libtool
 %{_includedir}/neaacdec.h
 %{_libdir}/libfaad.so
 
+%{?_with_xmms:
 %files -n xmms-%{name}
 %doc plugins/xmms/AUTHORS plugins/xmms/NEWS
 %doc plugins/xmms/ChangeLog plugins/xmms/README plugins/xmms/TODO
 %{xmmsinputplugindir}/libmp4.so
+}
 
 %changelog
 * Fri Jun 07 2019 Nicolas Chauvet <kwizart@gmail.com> - 1:2.7-9
 - Fix overflows
+- Conditionalize xmms for el7
 
 * Tue Aug 23 2016 Nicolas Chauvet <nicolas.chauvet@kwizart.fr> - 1:2.7-8
 - Bump for dist
