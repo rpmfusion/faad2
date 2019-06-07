@@ -4,13 +4,15 @@ Summary:	Library and frontend for decoding MPEG2/4 AAC
 Name:		faad2
 Epoch:		1
 Version:	2.8.8
-Release:	5%{?dist}
+Release:	6%{?dist}
 License:	GPLv2+
 URL:		http://www.audiocoding.com/faad2.html
 Source:		http://downloads.sourceforge.net/sourceforge/faac/%{name}-%{version}.tar.gz
 # fix non-PIC objects in libmp4ff.a
 Patch0:		%{name}-pic.patch
 Patch1:		fix_undefined_version.patch
+# Security issue from videolan contribs
+Patch2:         faad2-fix-overflows.patch
 
 BuildRequires:	gcc-c++
 BuildRequires:	id3lib-devel
@@ -98,6 +100,9 @@ find $RPM_BUILD_ROOT -name '*.la' -or -name '*.a' | xargs rm -f
 %{xmmsinputplugindir}/libmp4.so
 
 %changelog
+* Fri Jun 07 2019 Nicolas Chauvet <kwizart@gmail.com> - 1:2.8.8-6
+- Fix overflows
+
 * Mon Mar 04 2019 RPM Fusion Release Engineering <leigh123linux@gmail.com> - 1:2.8.8-5
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_30_Mass_Rebuild
 
