@@ -2,22 +2,25 @@
 %global _with_xmms 1
 %global	xmmsinputplugindir %(xmms-config --input-plugin-dir 2>/dev/null)
 %endif
+%global _version 2_9_1
 
 Summary:	Library and frontend for decoding MPEG2/4 AAC
 Name:		faad2
 Epoch:		1
-Version:	2.8.8
-Release:	7%{?dist}
+Version:	2.9.1
+Release:	1%{?dist}
 License:	GPLv2+
 URL:		http://www.audiocoding.com/faad2.html
-Source:		http://downloads.sourceforge.net/sourceforge/faac/%{name}-%{version}.tar.gz
+Source:		https://github.com/knik0/faad2/archive/%{_version}/%{name}-%{_version}.tar.gz
+Patch0:     https://github.com/knik0/faad2/commit/5530ffdfa6e9d89f5956b8a0901b5d168ce7d46b.patch#/readd_files_xmms.patch
 # fix non-PIC objects in libmp4ff.a
-Patch0:		%{name}-pic.patch
-Patch1:		fix_undefined_version.patch
-# Security issue from videolan contribs
-Patch2:         faad2-fix-overflows.patch
+Patch1:		%{name}-pic.patch
+Patch2:		fix_undefined_version.patch
+
 
 BuildRequires:	gcc-c++
+BuildRequires:  automake
+BuildRequires:  libtool
 BuildRequires:	libsysfs-devel
 %{?_with_xmms:
 BuildRequires: id3lib-devel
@@ -68,7 +71,11 @@ This package contains an input plugin for xmms.
 }
 
 %prep
-%autosetup -p1
+%setup -q -n %{name}-%{_version}
+%patch0 -R -p1
+%patch1 -p1
+%patch2 -p1
+./bootstrap
 
 %build
 %configure \
@@ -113,6 +120,9 @@ find $RPM_BUILD_ROOT -name '*.la' -or -name '*.a' | xargs rm -f
 }
 
 %changelog
+* Wed Jan 01 2020 Leigh Scott <leigh123linux@googlemail.com> - 1:2.9.1-1
+- Update to 2.9.1
+
 * Fri Aug 09 2019 RPM Fusion Release Engineering <leigh123linux@gmail.com> - 1:2.8.8-7
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_31_Mass_Rebuild
 
