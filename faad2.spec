@@ -1,6 +1,8 @@
 %if 0%{?fedora} || 0%{?el7}
+%ifnarch i686
 %global _with_xmms 1
 %global	xmmsinputplugindir %(xmms-config --input-plugin-dir 2>/dev/null)
+%endif
 %endif
 %global _version 2_9_1
 
