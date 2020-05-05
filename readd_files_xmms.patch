@@ -5838,15 +5838,15 @@ diff --git a/configure.ac b/configure.ac
 index a03cafe..547071f 100644
 --- a/configure.ac
 +++ b/configure.ac
-@@ -156,8 +156,6 @@ if test x$WITHDRM = xyes; then
+@@ -159,8 +159,6 @@ if test x$WITHDRM = xyes; then
  fi
  
  AC_CONFIG_FILES(libfaad/Makefile)
 -AC_CONFIG_FILES(common/Makefile)
 -AC_CONFIG_FILES(common/mp4ff/Makefile)
+ AC_CONFIG_FILES(libfaad/faad2.pc)
  AC_CONFIG_FILES(plugins/Makefile)
  AC_CONFIG_FILES(plugins/xmms/Makefile)
- AC_CONFIG_FILES(plugins/xmms/src/Makefile)
 diff --git a/project/msvc/aacinfo.vcxproj b/project/msvc/aacinfo.vcxproj
 deleted file mode 100644
 index 4cca6d6..0000000

@@ -4,13 +4,13 @@
 %global	xmmsinputplugindir %(xmms-config --input-plugin-dir 2>/dev/null)
 %endif
 %endif
-%global _version 2_9_1
+%global _version 2_9_2
 
 Summary:	Library and frontend for decoding MPEG2/4 AAC
 Name:		faad2
 Epoch:		1
-Version:	2.9.1
-Release:	3%{?dist}
+Version:	2.9.2
+Release:	1%{?dist}
 License:	GPLv2+
 URL:		http://www.audiocoding.com/faad2.html
 Source:		https://github.com/knik0/faad2/archive/%{_version}/%{name}-%{_version}.tar.gz
@@ -25,8 +25,8 @@ BuildRequires:  automake
 BuildRequires:  libtool
 BuildRequires:	libsysfs-devel
 %{?_with_xmms:
-BuildRequires: id3lib-devel
-BuildRequires: xmms-devel
+BuildRequires:	id3lib-devel
+BuildRequires:	xmms-devel
 }
 BuildRequires:	zlib-devel
 
@@ -113,6 +113,7 @@ find $RPM_BUILD_ROOT -name '*.la' -or -name '*.a' | xargs rm -f
 %doc TODO
 %{_includedir}/faad.h
 %{_includedir}/neaacdec.h
+%{_libdir}/pkgconfig/faad2.pc
 %{_libdir}/libfaad*.so
 
 %{?_with_xmms:
@@ -122,6 +123,9 @@ find $RPM_BUILD_ROOT -name '*.la' -or -name '*.a' | xargs rm -f
 }
 
 %changelog
+* Tue May 05 2020 Leigh Scott <leigh123linux@gmail.com> - 1:2.9.2-1
+- Update to 2.9.2
+
 * Thu Mar 12 2020 Leigh Scott <leigh123linux@gmail.com> - 1:2.9.1-3
 - Rebuilt for i686
 
