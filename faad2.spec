@@ -1,4 +1,4 @@
-%if 0%{?fedora} || 0%{?el7}
+%if 0%{?fedora} < 35|| 0%{?el7}
 %ifnarch i686
 %global _with_xmms 1
 %global	xmmsinputplugindir %(xmms-config --input-plugin-dir 2>/dev/null)
@@ -13,8 +13,8 @@ Version:	2.10.0
 Release:	1%{?dist}
 License:	GPLv2+
 URL:		http://www.audiocoding.com/faad2.html
-Source:		https://github.com/knik0/faad2/archive/%{_version}/%{name}-%{_version}.tar.gz
-Patch0:     https://github.com/knik0/faad2/commit/5530ffdfa6e9d89f5956b8a0901b5d168ce7d46b.patch#/readd_files_xmms.patch
+Source		https://github.com/knik0/faad2/archive/%{_version}/%{name}-%{_version}.tar.gz
+Patch0:		https://github.com/knik0/faad2/commit/5530ffdfa6e9d89f5956b8a0901b5d168ce7d46b.patch#/readd_files_xmms.patch
 # fix non-PIC objects in libmp4ff.a
 Patch1:		%{name}-pic.patch
 Patch2:		fix_undefined_version.patch
