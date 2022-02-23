@@ -1,4 +1,4 @@
-%if 0%{?fedora} < 35|| 0%{?el7}
+%if 0%{?fedora} < 35 || 0%{?rhel} < 8
 %ifnarch i686
 %global _with_xmms 1
 %global	xmmsinputplugindir %(xmms-config --input-plugin-dir 2>/dev/null)
