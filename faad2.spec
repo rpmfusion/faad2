@@ -1,38 +1,19 @@
-%if 0%{?fc34} || 0%{?el7}
-%ifnarch i686
-%global _with_xmms 1
-%global	xmmsinputplugindir %(xmms-config --input-plugin-dir 2>/dev/null)
-%endif
-%endif
-%global _version 2_10_0
-
 Summary:	Library and frontend for decoding MPEG2/4 AAC
 Name:		faad2
 Epoch:		1
-Version:	2.10.0
-Release:	4%{?dist}
+Version:	2.10.1
+Release:	1%{?dist}
 License:	GPLv2+
 URL:		http://www.audiocoding.com/faad2.html
-Source:		https://github.com/knik0/faad2/archive/%{_version}/%{name}-%{_version}.tar.gz
-Patch0:		https://github.com/knik0/faad2/commit/5530ffdfa6e9d89f5956b8a0901b5d168ce7d46b.patch#/readd_files_xmms.patch
-# fix non-PIC objects in libmp4ff.a
-Patch1:		%{name}-pic.patch
-Patch2:		fix_undefined_version.patch
+Source:		https://github.com/knik0/faad2/archive/%{version}/%{name}-%{version}.tar.gz
 
 
 BuildRequires:	gcc-c++
 BuildRequires:  automake
 BuildRequires:  libtool
-BuildRequires:	libsysfs-devel
-%{?_with_xmms:
-BuildRequires:	id3lib-devel
-BuildRequires:	xmms-devel
-}
-BuildRequires:	zlib-devel
+BuildRequires:  libsysfs-devel
 
-%{!?_with_xmms:
 Obsoletes:	%{name}-xmms < %{version}-%{release}
-}
 
 %description
 FAAD 2 is a LC, MAIN and LTP profile, MPEG2 and MPEG-4 AAC decoder, completely
@@ -58,31 +39,13 @@ written from scratch.
 
 This package contains development files and documentation for libfaad.
 
-%{?_with_xmms:
-%package -n xmms-%{name}
-Summary:	AAC XMMS Input Plugin
-Requires:	%{name}-libs%{?_isa} = %{epoch}:%{version}-%{release}
-Provides:	xmms-aac%{?_isa} = %{version}-%{release}
-Obsoletes:	xmms-aac < 2.6.1
-
-%description -n xmms-%{name}
-FAAD 2 is a LC, MAIN and LTP profile, MPEG2 and MPEG-4 AAC decoder, completely
-written from scratch.
-
-This package contains an input plugin for xmms.
-}
-
 %prep
-%setup -q -n %{name}-%{_version}
-%patch0 -R -p1
-%patch1 -p1
-%patch2 -p1
+%autosetup -p1
 ./bootstrap
 
 %build
 %configure \
-    --disable-static \
-    %{?_with_xmms:--with-xmms}
+    --disable-static
 
 # remove rpath from libtool
 sed -i.rpath 's|^hardcode_libdir_flag_spec=.*|hardcode_libdir_flag_spec=""|g' libtool
@@ -116,13 +79,10 @@ find $RPM_BUILD_ROOT -name '*.la' -or -name '*.a' | xargs rm -f
 %{_libdir}/pkgconfig/faad2.pc
 %{_libdir}/libfaad*.so
 
-%{?_with_xmms:
-%files -n xmms-%{name}
-%doc plugins/xmms/{AUTHORS,NEWS,ChangeLog,README,TODO}
-%{xmmsinputplugindir}/libmp4.so
-}
-
 %changelog
+* Fri Oct 21 2022 Leigh Scott <leigh123linux@gmail.com> - 1:2.10.1-1
+- Update to 2.10.1
+
 * Sun Aug 07 2022 RPM Fusion Release Engineering <sergiomb@rpmfusion.org> - 1:2.10.0-4
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_37_Mass_Rebuild and ffmpeg
   5.1
