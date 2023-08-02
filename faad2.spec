@@ -2,7 +2,7 @@ Summary:	Library and frontend for decoding MPEG2/4 AAC
 Name:		faad2
 Epoch:		1
 Version:	2.10.1
-Release:	1%{?dist}
+Release:	2%{?dist}
 License:	GPLv2+
 URL:		http://www.audiocoding.com/faad2.html
 Source:		https://github.com/knik0/faad2/archive/%{version}/%{name}-%{version}.tar.gz
@@ -80,6 +80,9 @@ find $RPM_BUILD_ROOT -name '*.la' -or -name '*.a' | xargs rm -f
 %{_libdir}/libfaad*.so
 
 %changelog
+* Wed Aug 02 2023 RPM Fusion Release Engineering <sergiomb@rpmfusion.org> - 1:2.10.1-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_39_Mass_Rebuild
+
 * Fri Oct 21 2022 Leigh Scott <leigh123linux@gmail.com> - 1:2.10.1-1
 - Update to 2.10.1
 
