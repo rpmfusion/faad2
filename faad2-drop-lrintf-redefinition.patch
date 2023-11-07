@@ -1,0 +1,11 @@
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -5,6 +5,8 @@ cmake_minimum_required(VERSION 3.15)
+ 
+ project(LIBFAAD2 LANGUAGES C)
+ 
++add_definitions(-DHAVE_LRINTF)
++
+ # If FAAD is being bundled in another project, we don't want to
+ # install anything. However, we want to let people override this, so
+ # we'll use the FAAD_BUNDLED_MODE variable to let them do that; just

@@ -6,6 +6,7 @@ Release:	1%{?dist}
 License:	GPLv2+
 URL:		http://www.audiocoding.com/faad2.html
 Source:		https://github.com/knik0/faad2/archive/%{version}/%{name}-%{version}.tar.gz
+Patch0:     faad2-drop-lrintf-redefinition.patch
 
 
 BuildRequires:	gcc-c++
