@@ -1,18 +1,18 @@
 Summary:	Library and frontend for decoding MPEG2/4 AAC
 Name:		faad2
 Epoch:		1
-Version:	2.10.1
-Release:	2%{?dist}
+Version:	2.11.0
+Release:	1%{?dist}
 License:	GPLv2+
 URL:		http://www.audiocoding.com/faad2.html
 Source:		https://github.com/knik0/faad2/archive/%{version}/%{name}-%{version}.tar.gz
 
 
 BuildRequires:	gcc-c++
-BuildRequires:  automake
-BuildRequires:  libtool
+BuildRequires:  cmake
 BuildRequires:  libsysfs-devel
 
+Requires:	%{name}-libs%{?_isa} = %{epoch}:%{version}-%{release}
 Obsoletes:	%{name}-xmms < %{version}-%{release}
 
 %description
@@ -21,7 +21,6 @@ written from scratch.
 
 %package libs
 Summary:	Shared libraries of the FAAD 2 AAC decoder
-Obsoletes:	%{name} < 1:2.6.1-3
 
 %description libs
 FAAD 2 is a LC, MAIN and LTP profile, MPEG2 and MPEG-4 AAC decoder, completely
@@ -41,45 +40,41 @@ This package contains development files and documentation for libfaad.
 
 %prep
 %autosetup -p1
-./bootstrap
 
 %build
-%configure \
-    --disable-static
+%cmake
 
-# remove rpath from libtool
-sed -i.rpath 's|^hardcode_libdir_flag_spec=.*|hardcode_libdir_flag_spec=""|g' libtool
-sed -i.rpath 's|^runpath_var=LD_RUN_PATH|runpath_var=DIE_RPATH_DIE|g' libtool
-
-%make_build
+%cmake_build
 
 %install
-%make_install
-
-#Remove libtool archives.
-find $RPM_BUILD_ROOT -name '*.la' -or -name '*.a' | xargs rm -f
-
+%cmake_install
+install -m 0755 -d %{buildroot}%{_mandir}/man{1,3}
+install -D -m 644 frontend/faad.man %{buildroot}%{_mandir}/man1/faad.1
+install -D -m 644 docs/libfaad.3 -t %{buildroot}%{_mandir}/man3/
 
 %ldconfig_scriptlets libs
 
 
 %files
-%doc AUTHORS ChangeLog NEWS README*
+%doc AUTHORS ChangeLog README*
 %license COPYING
 %{_bindir}/faad
 %{_mandir}/man1/faad.1*
 
 %files libs
 %{_libdir}/libfaad*.so.*
+%{_mandir}/man3/libfaad.3*
 
 %files devel
-%doc TODO
 %{_includedir}/faad.h
 %{_includedir}/neaacdec.h
 %{_libdir}/pkgconfig/faad2.pc
 %{_libdir}/libfaad*.so
 
 %changelog
+* Tue Nov 07 2023 Leigh Scott <leigh123linux@gmail.com> - 1:2.11.0-1
+- Update to 2.11.0
+
 * Wed Aug 02 2023 RPM Fusion Release Engineering <sergiomb@rpmfusion.org> - 1:2.10.1-2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_39_Mass_Rebuild
 
