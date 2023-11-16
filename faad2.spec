@@ -1,12 +1,11 @@
 Summary:	Library and frontend for decoding MPEG2/4 AAC
 Name:		faad2
 Epoch:		1
-Version:	2.11.0
+Version:	2.11.1
 Release:	1%{?dist}
 License:	GPLv2+
 URL:		http://www.audiocoding.com/faad2.html
 Source:		https://github.com/knik0/faad2/archive/%{version}/%{name}-%{version}.tar.gz
-Patch0:     faad2-drop-lrintf-redefinition.patch
 
 
 BuildRequires:	gcc-c++
@@ -49,8 +48,7 @@ This package contains development files and documentation for libfaad.
 
 %install
 %cmake_install
-install -m 0755 -d %{buildroot}%{_mandir}/man{1,3}
-install -D -m 644 frontend/faad.man %{buildroot}%{_mandir}/man1/faad.1
+install -m 0755 -d %{buildroot}%{_mandir}/man3
 install -D -m 644 docs/libfaad.3 -t %{buildroot}%{_mandir}/man3/
 
 %ldconfig_scriptlets libs
@@ -73,6 +71,9 @@ install -D -m 644 docs/libfaad.3 -t %{buildroot}%{_mandir}/man3/
 %{_libdir}/libfaad*.so
 
 %changelog
+* Thu Nov 16 2023 Leigh Scott <leigh123linux@gmail.com> - 1:2.11.1-1
+- Update to 2.11.1
+
 * Tue Nov 07 2023 Leigh Scott <leigh123linux@gmail.com> - 1:2.11.0-1
 - Update to 2.11.0
 
